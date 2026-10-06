@@ -165,8 +165,8 @@ class ProdukController extends Controller
     private function dropdownData(): array
     {
         return [
-            'kategoriList' => Kategori::orderBy('nama_kategori')->orderBy('sub_kategori')->get(),
-            'gudangList'   => Gudang::active()->orderBy('nama_gudang')->get(),
+            'kategoriList' => Kategori::orderBy('nama_kategori')->orderBy('sub_kategori')->pluck('nama_kategori', 'id'),
+            'gudangList'   => Gudang::active()->orderBy('nama_gudang')->pluck('nama_gudang', 'id'),
         ];
     }
 }

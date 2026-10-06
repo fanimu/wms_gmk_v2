@@ -69,7 +69,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->sku }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $item->nama_produk }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->kategori->nama ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->kategori->nama_kategori ?? '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <span class="font-bold {{ $item->stok <= $item->stok_minimum ? 'text-red-600' : 'text-gray-900' }}">
