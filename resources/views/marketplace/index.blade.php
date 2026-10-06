@@ -33,7 +33,17 @@
                 </div>
             </div>
 
-            <!-- Grid of Cards -->
+            @if(session('error'))
+<div class='bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4'>
+    <strong>ERROR:</strong> {{ session('error') }}
+</div>
+@endif
+@if(session('success'))
+<div class='bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4'>
+    <strong>BERHASIL:</strong> {{ session('success') }}
+</div>
+@endif
+<!-- Grid of Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 @php
