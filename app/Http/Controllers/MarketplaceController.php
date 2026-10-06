@@ -56,6 +56,7 @@ class MarketplaceController extends Controller
         try {
             $tokenData = $shopeeService->getToken($code, $shopId);
             
+            $warning = '';
             // Coba ambil info toko (nama asli)
             $shopName = 'Shopee Store ' . $shopId;
             try {
@@ -65,6 +66,7 @@ class MarketplaceController extends Controller
                 }
             } catch (Exception $e) {
                 Log::warning('Gagal mengambil nama toko Shopee: ' . $e->getMessage());
+                $warning = ' (Info: Gagal mengambil profil toko - ' . $e->getMessage() . ')';
             }
             
             $store = MarketplaceStore::withTrashed()->where('platform', 'shopee')->where('shop_id', $shopId)->first();
@@ -89,7 +91,7 @@ class MarketplaceController extends Controller
             }
 
             return redirect()->route('marketplace.index')
-                ->with('success', 'Toko Shopee berhasil dihubungkan.');
+                ->with('success', 'Toko Shopee berhasil dihubungkan.' . $warning);
 
         } catch (Exception $e) {
             Log::error('Shopee Callback Error: ' . $e->getMessage());
@@ -140,6 +142,7 @@ class MarketplaceController extends Controller
                 throw new Exception('Data token tidak valid dari TikTok.');
             }
 
+            $warning = '';
             // Coba ambil info toko (nama asli)
             $shopName = 'TikTok Store ' . $openId;
             try {
@@ -149,6 +152,7 @@ class MarketplaceController extends Controller
                 }
             } catch (Exception $e) {
                 Log::warning('Gagal mengambil nama toko TikTok: ' . $e->getMessage());
+                $warning = ' (Info: Gagal mengambil profil toko - ' . $e->getMessage() . ')';
             }
 
             $store = MarketplaceStore::withTrashed()->where('platform', 'tiktok')->where('shop_id', $openId)->first();
@@ -173,7 +177,7 @@ class MarketplaceController extends Controller
             }
 
             return redirect()->route('marketplace.index')
-                ->with('success', 'Toko TikTok berhasil dihubungkan.');
+                ->with('success', 'Toko TikTok berhasil dihubungkan.' . $warning);
 
         } catch (Exception $e) {
             Log::error('TikTok Callback Error: ' . $e->getMessage());
