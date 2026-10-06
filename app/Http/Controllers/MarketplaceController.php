@@ -61,7 +61,6 @@ class MarketplaceController extends Controller
             $shopName = 'Shopee Store ' . $shopId;
             try {
                 $shopInfo = $shopeeService->getShopInfo($shopId, $tokenData['access_token']);
-                $warning = ' (Data API: ' . json_encode($shopInfo) . ')';
                 if (isset($shopInfo['shop_name']) && !empty($shopInfo['shop_name'])) {
                     $shopName = $shopInfo['shop_name'];
                 }
@@ -148,7 +147,6 @@ class MarketplaceController extends Controller
             $shopName = 'TikTok Store ' . $openId;
             try {
                 $shopInfo = $tiktokService->getShopInfo($accessToken);
-                $warning = ' (Data API: ' . json_encode($shopInfo) . ')';
                 if (isset($shopInfo['name']) && !empty($shopInfo['name'])) {
                     $shopName = $shopInfo['name'];
                 }

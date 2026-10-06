@@ -126,6 +126,6 @@ class ShopeeService
             throw new Exception('Error dari Shopee: ' . ($data['message'] ?? $data['error']));
         }
 
-        return $data['response'] ?? [];
+        return $data;
     }
 }
