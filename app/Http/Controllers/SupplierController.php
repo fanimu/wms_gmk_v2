@@ -43,7 +43,11 @@ class SupplierController extends Controller
 
         $suppliers = $query->paginate(15)->withQueryString();
 
-        return view('supplier.index', compact('suppliers', 'search', 'filterAktif'));
+        return view('supplier.index', [
+            'supplier'    => $suppliers,
+            'search'      => $search,
+            'filterAktif' => $filterAktif,
+        ]);
     }
 
     /**

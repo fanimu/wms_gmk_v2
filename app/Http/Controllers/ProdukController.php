@@ -57,11 +57,11 @@ class ProdukController extends Controller
         }
 
         $produks = $query->paginate(20)->withQueryString();
-        
-        $kategoris = Kategori::active()->get();
-        $gudangs = Gudang::active()->get();
 
-        return view('produk.index', compact('produks', 'search', 'kategoriId', 'gudangId', 'gender', 'filterAktif', 'kategoris', 'gudangs'));
+        return view('produk.index', array_merge(
+            compact('produks', 'search', 'kategoriId', 'gudangId', 'gender', 'filterAktif'),
+            $this->dropdownData()
+        ));
     }
 
     /**
@@ -69,10 +69,8 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        $kategoris = Kategori::active()->get();
-        $gudangs = Gudang::active()->get();
         
-        return view('produk.create', compact('kategoris', 'gudangs'));
+        return view('produk.create', $this->dropdownData());
     }
 
     /**
@@ -111,10 +109,8 @@ class ProdukController extends Controller
      */
     public function edit(Produk $produk)
     {
-        $kategoris = Kategori::active()->get();
-        $gudangs = Gudang::active()->get();
         
-        return view('produk.edit', compact('produk', 'kategoris', 'gudangs'));
+        return view('produk.edit', array_merge(compact('produk'), $this->dropdownData()));
     }
 
     /**
@@ -159,5 +155,18 @@ class ProdukController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menghapus data produk: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Data dropdown (kategori & gudang) untuk form dan filter produk.
+     *
+     * @return array{kategoriList: \Illuminate\Support\Collection, gudangList: \Illuminate\Support\Collection}
+     */
+    private function dropdownData(): array
+    {
+        return [
+            'kategoriList' => Kategori::orderBy('nama_kategori')->orderBy('sub_kategori')->get(),
+            'gudangList'   => Gudang::active()->orderBy('nama_gudang')->get(),
+        ];
     }
 }

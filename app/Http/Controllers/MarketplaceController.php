@@ -30,7 +30,7 @@ class MarketplaceController extends Controller
      */
     public function connectShopee(ShopeeService $shopeeService)
     {
-        $redirectUrl = route('marketplace.shopee.callback');
+        $redirectUrl = config('marketplace.shopee.redirect_url') ?: route('marketplace.shopee.callback');
         $authUrl = $shopeeService->getAuthUrl($redirectUrl);
         
         return redirect()->away($authUrl);
@@ -88,7 +88,7 @@ class MarketplaceController extends Controller
      */
     public function connectTiktok(TiktokService $tiktokService)
     {
-        $redirectUrl = route('marketplace.tiktok.callback');
+        $redirectUrl = config('marketplace.tiktok.redirect_url') ?: route('marketplace.tiktok.callback');
         $authUrl = $tiktokService->getAuthUrl($redirectUrl, 'connect_tiktok');
         
         return redirect()->away($authUrl);

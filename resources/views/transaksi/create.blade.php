@@ -140,7 +140,7 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('transactionForm', () => ({
             jenis: '{{ old('jenis') }}',
-            items: @json(old('items', [['produk_id' => '', 'qty' => 1, 'harga_satuan' => 0, 'catatan' => '']])),
+            items: {{ Illuminate\Support\Js::from(old('detail', [['produk_id' => '', 'qty' => 1, 'harga_satuan' => 0, 'catatan' => '']])) }},
             
             addItem() {
                 this.items.push({

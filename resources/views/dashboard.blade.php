@@ -10,18 +10,7 @@
         <p class="text-gray-500 mt-1">Berikut adalah ringkasan aktivitas warehouse hari ini.</p>
     </div>
 
-    <!-- Stat Cards -->
-    @php
-        // Dummy default stats if not passed from controller
-        $stats = $stats ?? [
-            'total_produk' => 1250,
-            'total_gudang' => 4,
-            'total_supplier' => 32,
-            'stok_rendah' => 15,
-            'transaksi_hari_ini' => 48,
-            'order_pending' => 7
-        ];
-    @endphp
+    <!-- Stat Cards (data dari DashboardController) -->
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total Produk -->
@@ -94,22 +83,14 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @php
-                            // Dummy transactions
-                            $transactions = [
-                                ['kode' => 'TRX-001', 'jenis' => 'MASUK', 'gudang' => 'Gudang Utama', 'tanggal' => '2023-10-25', 'status' => 'CONFIRMED'],
-                                ['kode' => 'TRX-002', 'jenis' => 'KELUAR', 'gudang' => 'Gudang Transit', 'tanggal' => '2023-10-25', 'status' => 'DRAFT'],
-                                ['kode' => 'TRX-003', 'jenis' => 'RETUR', 'gudang' => 'Gudang Utama', 'tanggal' => '2023-10-24', 'status' => 'CONFIRMED'],
-                                ['kode' => 'TRX-004', 'jenis' => 'ADJUSTMENT', 'gudang' => 'Gudang Rusak', 'tanggal' => '2023-10-24', 'status' => 'CANCELLED'],
-                            ];
-                        @endphp
-                        
-                        @forelse($transactions as $trx)
+                        @forelse($transaksiTerbaru as $trx)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-3 font-medium text-gray-900">{{ $trx['kode'] }}</td>
+                            <td class="px-6 py-3 font-medium text-gray-900">
+                                <a href="{{ route('transaksi.show', $trx) }}" class="hover:text-indigo-600">{{ $trx->kode_transaksi }}</a>
+                            </td>
                             <td class="px-6 py-3">
                                 @php
-                                    $jenisType = match($trx['jenis']) {
+                                    $jenisType = match($trx->jenis) {
                                         'MASUK' => 'success',
                                         'KELUAR' => 'danger',
                                         'RETUR' => 'warning',
@@ -117,20 +98,20 @@
                                         default => 'default'
                                     };
                                 @endphp
-                                <x-badge :type="$jenisType">{{ $trx['jenis'] }}</x-badge>
+                                <x-badge :type="$jenisType">{{ $trx->jenis }}</x-badge>
                             </td>
-                            <td class="px-6 py-3 text-gray-600">{{ $trx['gudang'] }}</td>
-                            <td class="px-6 py-3 text-gray-600">{{ $trx['tanggal'] }}</td>
+                            <td class="px-6 py-3 text-gray-600">{{ $trx->gudang?->nama_gudang ?? '-' }}</td>
+                            <td class="px-6 py-3 text-gray-600">{{ $trx->tanggal?->format('d/m/Y') }}</td>
                             <td class="px-6 py-3">
                                 @php
-                                    $statusType = match($trx['status']) {
+                                    $statusType = match($trx->status) {
                                         'CONFIRMED' => 'success',
                                         'DRAFT' => 'default',
                                         'CANCELLED' => 'danger',
                                         default => 'default'
                                     };
                                 @endphp
-                                <x-badge :type="$statusType">{{ $trx['status'] }}</x-badge>
+                                <x-badge :type="$statusType">{{ $trx->status }}</x-badge>
                             </td>
                         </tr>
                         @empty
@@ -160,26 +141,18 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @php
-                            // Dummy low stock products
-                            $lowStocks = [
-                                ['nama' => 'Kaos Polos Hitam M', 'sku' => 'KPH-M-01', 'stok' => 5, 'min' => 20, 'gudang' => 'Gudang Utama'],
-                                ['nama' => 'Kemeja Flanel L', 'sku' => 'KFL-L-02', 'stok' => 2, 'min' => 15, 'gudang' => 'Gudang Utama'],
-                                ['nama' => 'Celana Chino 32', 'sku' => 'CLN-32-05', 'stok' => 0, 'min' => 10, 'gudang' => 'Gudang Transit'],
-                                ['nama' => 'Topi Baseball Hitam', 'sku' => 'TPB-HTM', 'stok' => 8, 'min' => 25, 'gudang' => 'Gudang Aksesoris'],
-                            ];
-                        @endphp
-                        
-                        @forelse($lowStocks as $item)
+                        @forelse($produkStokRendah as $item)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-3 font-medium text-gray-900">{{ $item['nama'] }}</td>
-                            <td class="px-6 py-3 text-gray-600">{{ $item['sku'] }}</td>
-                            <td class="px-6 py-3 text-center">
-                                <span class="font-bold text-red-600">{{ $item['stok'] }}</span>
-                                <span class="text-gray-400 mx-1">/</span>
-                                <span class="text-gray-500">{{ $item['min'] }}</span>
+                            <td class="px-6 py-3 font-medium text-gray-900">
+                                <a href="{{ route('produk.show', $item) }}" class="hover:text-indigo-600">{{ $item->nama_produk }}</a>
                             </td>
-                            <td class="px-6 py-3 text-gray-600">{{ $item['gudang'] }}</td>
+                            <td class="px-6 py-3 text-gray-600">{{ $item->sku }}</td>
+                            <td class="px-6 py-3 text-center">
+                                <span class="font-bold text-red-600">{{ $item->stok }}</span>
+                                <span class="text-gray-400 mx-1">/</span>
+                                <span class="text-gray-500">{{ $item->stok_minimum }}</span>
+                            </td>
+                            <td class="px-6 py-3 text-gray-600">{{ $item->gudang?->nama_gudang ?? '-' }}</td>
                         </tr>
                         @empty
                         <tr>

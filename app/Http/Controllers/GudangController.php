@@ -43,7 +43,11 @@ class GudangController extends Controller
 
         $gudangs = $query->paginate(15)->withQueryString();
 
-        return view('gudang.index', compact('gudangs', 'search', 'filterAktif'));
+        return view('gudang.index', [
+            'gudang'      => $gudangs,
+            'search'      => $search,
+            'filterAktif' => $filterAktif,
+        ]);
     }
 
     /**

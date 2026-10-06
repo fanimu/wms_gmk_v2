@@ -76,7 +76,11 @@ class TransaksiController extends Controller
         $gudangs = Gudang::active()->get();
         $produks = Produk::active()->get();
 
-        return view('transaksi.create', compact('suppliers', 'gudangs', 'produks'));
+        return view('transaksi.create', [
+            'supplierList' => $suppliers,
+            'gudangList'   => $gudangs,
+            'produkList'   => $produks,
+        ]);
     }
 
     /**
@@ -139,7 +143,12 @@ class TransaksiController extends Controller
         $gudangs = Gudang::active()->get();
         $produks = Produk::active()->get();
 
-        return view('transaksi.edit', compact('transaksi', 'suppliers', 'gudangs', 'produks'));
+        return view('transaksi.edit', [
+            'transaksi'    => $transaksi,
+            'supplierList' => $suppliers,
+            'gudangList'   => $gudangs,
+            'produkList'   => $produks,
+        ]);
     }
 
     /**
