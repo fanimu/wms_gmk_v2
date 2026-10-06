@@ -67,20 +67,26 @@ class MarketplaceController extends Controller
                 Log::warning('Gagal mengambil nama toko Shopee: ' . $e->getMessage());
             }
             
-            MarketplaceStore::withTrashed()->updateOrCreate(
-                [
-                    'platform' => 'shopee',
-                    'shop_id' => $shopId,
-                ],
-                [
-                    'shop_name' => $shopName,
-                    'access_token' => $tokenData['access_token'],
-                    'refresh_token' => $tokenData['refresh_token'],
-                    'token_expires_at' => now()->addSeconds($tokenData['expire_in']),
-                    'status' => 'active',
-                    'deleted_at' => null,
-                ]
-            );
+            $store = MarketplaceStore::withTrashed()->where('platform', 'shopee')->where('shop_id', $shopId)->first();
+            
+            $storeData = [
+                'shop_name' => $shopName,
+                'access_token' => $tokenData['access_token'],
+                'refresh_token' => $tokenData['refresh_token'],
+                'token_expires_at' => now()->addSeconds($tokenData['expire_in']),
+                'is_active' => true,
+            ];
+
+            if ($store) {
+                if ($store->trashed()) {
+                    $store->restore();
+                }
+                $store->update($storeData);
+            } else {
+                $storeData['platform'] = 'shopee';
+                $storeData['shop_id'] = $shopId;
+                MarketplaceStore::create($storeData);
+            }
 
             return redirect()->route('marketplace.index')
                 ->with('success', 'Toko Shopee berhasil dihubungkan.');
@@ -145,20 +151,26 @@ class MarketplaceController extends Controller
                 Log::warning('Gagal mengambil nama toko TikTok: ' . $e->getMessage());
             }
 
-            MarketplaceStore::withTrashed()->updateOrCreate(
-                [
-                    'platform' => 'tiktok',
-                    'shop_id' => $openId,
-                ],
-                [
-                    'shop_name' => $shopName,
-                    'access_token' => $accessToken,
-                    'refresh_token' => $refreshToken,
-                    'token_expires_at' => now()->addSeconds($expiresIn),
-                    'status' => 'active',
-                    'deleted_at' => null,
-                ]
-            );
+            $store = MarketplaceStore::withTrashed()->where('platform', 'tiktok')->where('shop_id', $openId)->first();
+            
+            $storeData = [
+                'shop_name' => $shopName,
+                'access_token' => $accessToken,
+                'refresh_token' => $refreshToken,
+                'token_expires_at' => now()->addSeconds($expiresIn),
+                'is_active' => true,
+            ];
+
+            if ($store) {
+                if ($store->trashed()) {
+                    $store->restore();
+                }
+                $store->update($storeData);
+            } else {
+                $storeData['platform'] = 'tiktok';
+                $storeData['shop_id'] = $openId;
+                MarketplaceStore::create($storeData);
+            }
 
             return redirect()->route('marketplace.index')
                 ->with('success', 'Toko TikTok berhasil dihubungkan.');
