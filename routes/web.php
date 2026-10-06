@@ -81,6 +81,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ── MARKETPLACE ──
     Route::prefix('marketplace')->name('marketplace.')->group(function () {
         Route::get('/', [\App\Http\Controllers\MarketplaceController::class, 'index'])->name('index');
+        Route::get('/mapping', [\App\Http\Controllers\MarketplaceController::class, 'mapping'])->name('mapping');
         Route::get('/shopee/connect', [\App\Http\Controllers\MarketplaceController::class, 'connectShopee'])->name('shopee.connect');
         Route::get('/shopee/callback', [\App\Http\Controllers\MarketplaceController::class, 'shopeeCallback'])->name('shopee.callback');
         Route::get('/tiktok/connect', [\App\Http\Controllers\MarketplaceController::class, 'connectTiktok'])->name('tiktok.connect');

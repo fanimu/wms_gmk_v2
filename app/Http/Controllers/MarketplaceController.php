@@ -197,12 +197,22 @@ class MarketplaceController extends Controller
             ->with('success', 'Koneksi dengan ' . ucfirst($store->platform) . ' berhasil diputuskan.');
     }
 
-    /**
-     * Sinkronisasi manual toko.
-     */
     public function sync($id)
     {
+        $store = MarketplaceStore::findOrFail($id);
+        
+        \App\Jobs\SyncMarketplaceProductsJob::dispatch($store->id);
+        
         return redirect()->route('marketplace.index')
-            ->with('success', 'Fitur sinkronisasi produk & pesanan sedang dalam tahap pengembangan!');
+            ->with('success', 'Proses sinkronisasi berjalan di latar belakang (Background Job)...');
+    }
+
+    /**
+     * Menampilkan daftar pemetaan produk WMS dengan Marketplace.
+     */
+    public function mapping()
+    {
+        $produks = \App\Models\Produk::with('marketplaceProducts')->paginate(20);
+        return view('marketplace.mapping', compact('produks'));
     }
 }
