@@ -167,4 +167,24 @@ class MarketplaceController extends Controller
                 ->with('error', 'Gagal menghubungkan ke TikTok: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Memutuskan koneksi toko.
+     */
+    public function disconnect($id)
+    {
+        $store = MarketplaceStore::findOrFail($id);
+        $store->delete();
+        return redirect()->route('marketplace.index')
+            ->with('success', 'Koneksi dengan ' . ucfirst($store->platform) . ' berhasil diputuskan.');
+    }
+
+    /**
+     * Sinkronisasi manual toko.
+     */
+    public function sync($id)
+    {
+        return redirect()->route('marketplace.index')
+            ->with('success', 'Fitur sinkronisasi produk & pesanan sedang dalam tahap pengembangan!');
+    }
 }
