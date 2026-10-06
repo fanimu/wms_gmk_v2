@@ -105,7 +105,7 @@ class TiktokService
      */
     public function getShopInfo(string $accessToken): array
     {
-        $apiPath = '/seller/202309/shops';
+        $apiPath = '/authorization/202309/shops';
         $timestamp = time();
         
         $params = [
