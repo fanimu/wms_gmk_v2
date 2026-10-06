@@ -52,7 +52,7 @@ class TiktokService
         // TikTok token get using GET query params or POST json, usually POST json or GET with query
         // According to docs it can be GET with auth_code and grant_type. 
         // Let's use get with query params
-        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&app_secret=' . $this->appSecret . '&auth_code=' . $authCode . '&grant_type=authorized_code';
+        $url = 'https://auth.tiktok-shops.com' . $apiPath . '?app_key=' . $this->appKey . '&app_secret=' . $this->appSecret . '&auth_code=' . $authCode . '&grant_type=authorized_code';
 
         $response = Http::get($url);
 
