@@ -37,6 +37,7 @@ class ProdukRequest extends FormRequest
             'grup_produk' => 'nullable|string|max:100',
             'harga_beli' => 'required|numeric|min:0',
             'harga_jual' => 'required|numeric|min:0',
+            'stok' => 'nullable|integer|min:0',
             'stok_minimum' => 'nullable|integer|min:0',
             'gambar' => 'nullable|image|max:2048',
             'deskripsi' => 'nullable|string|max:2000',
