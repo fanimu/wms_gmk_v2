@@ -73,7 +73,7 @@
                     <td class="px-6 py-4">{{ $item->telepon ?? '-' }}</td>
                     <td class="px-6 py-4">{{ $item->kota ?? '-' }}</td>
                     <td class="px-6 py-4">
-                        @if($item->is_aktif)
+                        @if($item->is_active)
                             <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400">Aktif</span>
                         @else
                             <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded border border-red-400">Nonaktif</span>

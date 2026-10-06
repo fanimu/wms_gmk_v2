@@ -33,7 +33,7 @@ class SupplierController extends Controller
         $query = Supplier::query();
 
         if ($search) {
-            $query->where('nama', 'like', "%{$search}%")
+            $query->where('nama_supplier', 'like', "%{$search}%")
                   ->orWhere('kode_supplier', 'like', "%{$search}%");
         }
 
@@ -65,11 +65,11 @@ class SupplierController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['kode_supplier'] = $this->kodeGenerator->generateSupplierKode();
+            $data['kode_supplier'] = $this->kodeGenerator->generateKodeSupplier();
             
             $supplier = Supplier::create($data);
 
-            $this->activityLog->log('CREATE_SUPPLIER', "Menambahkan supplier baru: {$supplier->nama}");
+            $this->activityLog->log('CREATE_SUPPLIER', "Menambahkan supplier baru: {$supplier->nama_supplier}");
 
             return redirect()->route('supplier.index')->with('success', 'Data supplier berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class SupplierController extends Controller
             $supplier->update($request->validated());
             $newData = $supplier->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_SUPPLIER', "Memperbarui data supplier: {$supplier->nama}", $oldData, $newData);
+            $this->activityLog->log('UPDATE_SUPPLIER', "Memperbarui data supplier: {$supplier->nama_supplier}", $oldData, $newData);
 
             return redirect()->route('supplier.index')->with('success', 'Data supplier berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -118,7 +118,7 @@ class SupplierController extends Controller
     public function destroy(Supplier $supplier)
     {
         try {
-            $nama = $supplier->nama;
+            $nama = $supplier->nama_supplier;
             $supplier->delete();
 
             $this->activityLog->log('DELETE_SUPPLIER', "Menghapus data supplier: {$nama}");

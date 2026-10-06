@@ -88,12 +88,12 @@
                 </div>
 
                 <div>
-                    <label for="is_aktif" class="block mb-2 text-sm font-medium text-gray-900">Status <span class="text-red-500">*</span></label>
-                    <select id="is_aktif" name="is_aktif" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" required>
-                        <option value="1" {{ old('is_aktif', $supplier->is_aktif) == 1 ? 'selected' : '' }}>Aktif</option>
-                        <option value="0" {{ old('is_aktif', $supplier->is_aktif) == 0 ? 'selected' : '' }}>Nonaktif</option>
+                    <label for="is_active" class="block mb-2 text-sm font-medium text-gray-900">Status <span class="text-red-500">*</span></label>
+                    <select id="is_active" name="is_active" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" required>
+                        <option value="1" {{ old('is_active', $supplier->is_active) == 1 ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ old('is_active', $supplier->is_active) == 0 ? 'selected' : '' }}>Nonaktif</option>
                     </select>
-                    @error('is_aktif')
+                    @error('is_active')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
