@@ -88,4 +88,44 @@ class ShopeeService
 
         return $data;
     }
+
+    /**
+     * Get Shop Info
+     *
+     * @param string $shopId
+     * @param string $accessToken
+     * @return array
+     * @throws Exception
+     */
+    public function getShopInfo(string $shopId, string $accessToken): array
+    {
+        $apiPath = '/api/v2/shop/get_shop_info';
+        $timestamp = time();
+        $sign = $this->generateSign($apiPath, $timestamp, $accessToken, $shopId);
+
+        $url = sprintf(
+            '%s%s?partner_id=%s&timestamp=%s&access_token=%s&shop_id=%s&sign=%s',
+            $this->baseUrl,
+            $apiPath,
+            $this->partnerId,
+            $timestamp,
+            $accessToken,
+            $shopId,
+            $sign
+        );
+
+        $response = Http::get($url);
+
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan info toko Shopee: ' . $response->body());
+        }
+
+        $data = $response->json();
+        
+        if (isset($data['error']) && $data['error'] !== '') {
+            throw new Exception('Error dari Shopee: ' . ($data['message'] ?? $data['error']));
+        }
+
+        return $data['response'] ?? [];
+    }
 }

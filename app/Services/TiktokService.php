@@ -95,4 +95,42 @@ class TiktokService
 
         return hash_hmac('sha256', $stringToBeSigned, $this->appSecret);
     }
+
+    /**
+     * Get Shop Info
+     *
+     * @param string $accessToken
+     * @return array
+     * @throws Exception
+     */
+    public function getShopInfo(string $accessToken): array
+    {
+        $apiPath = '/seller/202309/shops';
+        $timestamp = time();
+        
+        $params = [
+            'app_key' => $this->appKey,
+            'timestamp' => $timestamp,
+        ];
+        
+        $sign = $this->generateSign($apiPath, $params);
+        
+        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&sign=' . $sign;
+        
+        $response = Http::withHeaders([
+            'x-tts-access-token' => $accessToken,
+        ])->get($url);
+
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan info toko TikTok: ' . $response->body());
+        }
+
+        $data = $response->json();
+        
+        if (isset($data['code']) && $data['code'] !== 0) {
+            throw new Exception('Error dari TikTok: ' . ($data['message'] ?? 'Unknown error'));
+        }
+
+        return $data['data']['shops'][0] ?? [];
+    }
 }

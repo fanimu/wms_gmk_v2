@@ -85,6 +85,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/shopee/callback', [\App\Http\Controllers\MarketplaceController::class, 'shopeeCallback'])->name('shopee.callback');
         Route::get('/tiktok/connect', [\App\Http\Controllers\MarketplaceController::class, 'connectTiktok'])->name('tiktok.connect');
         Route::get('/tiktok/callback', [\App\Http\Controllers\MarketplaceController::class, 'tiktokCallback'])->name('tiktok.callback');
+        Route::delete('/{id}/disconnect', [\App\Http\Controllers\MarketplaceController::class, 'disconnect'])->name('disconnect');
+        Route::post('/{id}/sync', [\App\Http\Controllers\MarketplaceController::class, 'sync'])->name('sync');
     });
 });
 

@@ -56,13 +56,24 @@ class MarketplaceController extends Controller
         try {
             $tokenData = $shopeeService->getToken($code, $shopId);
             
+            // Coba ambil info toko (nama asli)
+            $shopName = 'Shopee Store ' . $shopId;
+            try {
+                $shopInfo = $shopeeService->getShopInfo($shopId, $tokenData['access_token']);
+                if (isset($shopInfo['shop_name'])) {
+                    $shopName = $shopInfo['shop_name'];
+                }
+            } catch (Exception $e) {
+                Log::warning('Gagal mengambil nama toko Shopee: ' . $e->getMessage());
+            }
+            
             MarketplaceStore::updateOrCreate(
                 [
                     'platform' => 'shopee',
                     'shop_id' => $shopId,
                 ],
                 [
-                    'shop_name' => 'Shopee Store ' . $shopId,
+                    'shop_name' => $shopName,
                     'access_token' => $tokenData['access_token'],
                     'refresh_token' => $tokenData['refresh_token'],
                     'token_expires_at' => now()->addSeconds($tokenData['expire_in']),
@@ -106,7 +117,8 @@ class MarketplaceController extends Controller
         $code = $request->query('code');
         
         if (!$code) {
-            dd("Terdapat Kesalahan TikTok: Kode Otorisasi Tidak Ditemukan! (Kosong)");
+            return redirect()->route('marketplace.index')
+                ->with('error', 'Gagal menghubungkan ke TikTok. Kode otorisasi tidak ditemukan.');
         }
 
         try {
@@ -121,13 +133,24 @@ class MarketplaceController extends Controller
                 throw new Exception('Data token tidak valid dari TikTok.');
             }
 
+            // Coba ambil info toko (nama asli)
+            $shopName = 'TikTok Store ' . $openId;
+            try {
+                $shopInfo = $tiktokService->getShopInfo($accessToken);
+                if (isset($shopInfo['name'])) {
+                    $shopName = $shopInfo['name'];
+                }
+            } catch (Exception $e) {
+                Log::warning('Gagal mengambil nama toko TikTok: ' . $e->getMessage());
+            }
+
             MarketplaceStore::updateOrCreate(
                 [
                     'platform' => 'tiktok',
                     'shop_id' => $openId,
                 ],
                 [
-                    'shop_name' => 'TikTok Store ' . $openId,
+                    'shop_name' => $shopName,
                     'access_token' => $accessToken,
                     'refresh_token' => $refreshToken,
                     'token_expires_at' => now()->addSeconds($expiresIn),
@@ -140,7 +163,8 @@ class MarketplaceController extends Controller
 
         } catch (Exception $e) {
             Log::error('TikTok Callback Error: ' . $e->getMessage());
-            dd("Terdapat Kesalahan TikTok:", $e->getMessage());
+            return redirect()->route('marketplace.index')
+                ->with('error', 'Gagal menghubungkan ke TikTok: ' . $e->getMessage());
         }
     }
 }

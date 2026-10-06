@@ -101,12 +101,19 @@
                     </div>
                     <div class="p-4 bg-gray-50 flex justify-end gap-3 mt-auto">
                         @if($shopeeStore)
-                            <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                Sync Manual
-                            </button>
-                            <button class="px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
-                                Putuskan Koneksi
-                            </button>
+                                                        <form action="{{ route('marketplace.sync', $shopeeStore->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                    Sync Manual
+                                </button>
+                            </form>
+                            <form action="{{ route('marketplace.disconnect', $shopeeStore->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin memutuskan koneksi toko ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
+                                    Putuskan Koneksi
+                                </button>
+                            </form>
                         @else
                             <a href="{{ route('marketplace.shopee.connect') }}" class="w-full text-center px-4 py-2 bg-[#ee4d2d] rounded-lg text-sm font-medium text-white hover:bg-[#d73f21] transition-colors">
                                 Hubungkan Shopee
@@ -167,12 +174,19 @@
                     </div>
                     <div class="p-4 bg-gray-50 flex justify-end gap-3 mt-auto">
                         @if($tiktokStore)
-                            <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                Sync Manual
-                            </button>
-                            <button class="px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
-                                Putuskan Koneksi
-                            </button>
+                            <form action="{{ route('marketplace.sync', $tiktokStore->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                    Sync Manual
+                                </button>
+                            </form>
+                            <form action="{{ route('marketplace.disconnect', $tiktokStore->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin memutuskan koneksi toko ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 transition-colors">
+                                    Putuskan Koneksi
+                                </button>
+                            </form>
                         @else
                             <a href="{{ route('marketplace.tiktok.connect') }}" class="w-full text-center px-4 py-2 bg-black rounded-lg text-sm font-medium text-white hover:bg-gray-800 transition-colors">
                                 Hubungkan TikTok Shop
@@ -242,8 +256,11 @@
                                         {{ $store->last_sync_at ? $store->last_sync_at->format('d M Y H:i') : '-' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3">Detail</button>
-                                        <button class="text-red-600 hover:text-red-900">Hapus</button>
+                                        <form action="{{ route('marketplace.disconnect', $store->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus koneksi toko ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
