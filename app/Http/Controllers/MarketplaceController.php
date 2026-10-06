@@ -106,8 +106,7 @@ class MarketplaceController extends Controller
         $code = $request->query('code');
         
         if (!$code) {
-            return redirect()->route('marketplace.index')
-                ->with('error', 'Gagal menghubungkan ke TikTok. Kode otorisasi tidak ditemukan.');
+            dd("Terdapat Kesalahan TikTok: Kode Otorisasi Tidak Ditemukan! (Kosong)");
         }
 
         try {
@@ -141,8 +140,7 @@ class MarketplaceController extends Controller
 
         } catch (Exception $e) {
             Log::error('TikTok Callback Error: ' . $e->getMessage());
-            return redirect()->route('marketplace.index')
-                ->with('error', 'Gagal menghubungkan ke TikTok: ' . $e->getMessage());
+            dd("Terdapat Kesalahan TikTok:", $e->getMessage());
         }
     }
 }
