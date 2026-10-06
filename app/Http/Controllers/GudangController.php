@@ -33,7 +33,7 @@ class GudangController extends Controller
         $query = Gudang::query();
 
         if ($search) {
-            $query->where('nama', 'like', "%{$search}%")
+            $query->where('nama_gudang', 'like', "%{$search}%")
                   ->orWhere('kode_gudang', 'like', "%{$search}%");
         }
 
@@ -65,11 +65,11 @@ class GudangController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['kode_gudang'] = $this->kodeGenerator->generateGudangKode();
+            $data['kode_gudang'] = $this->kodeGenerator->generateKodeGudang();
             
             $gudang = Gudang::create($data);
 
-            $this->activityLog->log('CREATE_GUDANG', "Menambahkan gudang baru: {$gudang->nama}");
+            $this->activityLog->log('CREATE_GUDANG', "Menambahkan gudang baru: {$gudang->nama_gudang}");
 
             return redirect()->route('gudang.index')->with('success', 'Data gudang berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class GudangController extends Controller
             $gudang->update($request->validated());
             $newData = $gudang->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_GUDANG', "Memperbarui data gudang: {$gudang->nama}", $oldData, $newData);
+            $this->activityLog->log('UPDATE_GUDANG', "Memperbarui data gudang: {$gudang->nama_gudang}", $oldData, $newData);
 
             return redirect()->route('gudang.index')->with('success', 'Data gudang berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -118,7 +118,7 @@ class GudangController extends Controller
     public function destroy(Gudang $gudang)
     {
         try {
-            $nama = $gudang->nama;
+            $nama = $gudang->nama_gudang;
             $gudang->delete();
 
             $this->activityLog->log('DELETE_GUDANG', "Menghapus data gudang: {$nama}");
