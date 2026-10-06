@@ -67,7 +67,7 @@ class MarketplaceController extends Controller
                 Log::warning('Gagal mengambil nama toko Shopee: ' . $e->getMessage());
             }
             
-            MarketplaceStore::updateOrCreate(
+            MarketplaceStore::withTrashed()->updateOrCreate(
                 [
                     'platform' => 'shopee',
                     'shop_id' => $shopId,
@@ -78,6 +78,7 @@ class MarketplaceController extends Controller
                     'refresh_token' => $tokenData['refresh_token'],
                     'token_expires_at' => now()->addSeconds($tokenData['expire_in']),
                     'status' => 'active',
+                    'deleted_at' => null,
                 ]
             );
 
@@ -144,7 +145,7 @@ class MarketplaceController extends Controller
                 Log::warning('Gagal mengambil nama toko TikTok: ' . $e->getMessage());
             }
 
-            MarketplaceStore::updateOrCreate(
+            MarketplaceStore::withTrashed()->updateOrCreate(
                 [
                     'platform' => 'tiktok',
                     'shop_id' => $openId,
@@ -155,6 +156,7 @@ class MarketplaceController extends Controller
                     'refresh_token' => $refreshToken,
                     'token_expires_at' => now()->addSeconds($expiresIn),
                     'status' => 'active',
+                    'deleted_at' => null,
                 ]
             );
 
