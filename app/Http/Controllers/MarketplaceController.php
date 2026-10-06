@@ -62,7 +62,7 @@ class MarketplaceController extends Controller
                     'shop_id' => $shopId,
                 ],
                 [
-                    'name' => 'Shopee Store ' . $shopId,
+                    'shop_name' => 'Shopee Store ' . $shopId,
                     'access_token' => $tokenData['access_token'],
                     'refresh_token' => $tokenData['refresh_token'],
                     'token_expires_at' => now()->addSeconds($tokenData['expire_in']),
@@ -128,7 +128,7 @@ class MarketplaceController extends Controller
                     'shop_id' => $openId,
                 ],
                 [
-                    'name' => 'TikTok Store ' . $openId,
+                    'shop_name' => 'TikTok Store ' . $openId,
                     'access_token' => $accessToken,
                     'refresh_token' => $refreshToken,
                     'token_expires_at' => now()->addSeconds($expiresIn),
