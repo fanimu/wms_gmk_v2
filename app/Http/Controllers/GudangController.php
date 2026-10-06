@@ -69,7 +69,7 @@ class GudangController extends Controller
             
             $gudang = Gudang::create($data);
 
-            $this->activityLog->log('CREATE_GUDANG', "Menambahkan gudang baru: {$gudang->nama_gudang}");
+            $this->activityLog->log('CREATE', 'Gudang', 'Menambahkan gudang baru: ' . $gudang->nama_gudang, $gudang);
 
             return redirect()->route('gudang.index')->with('success', 'Data gudang berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class GudangController extends Controller
             $gudang->update($request->validated());
             $newData = $gudang->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_GUDANG', "Memperbarui data gudang: {$gudang->nama_gudang}", $oldData, $newData);
+            $this->activityLog->log('UPDATE', 'Gudang', 'Memperbarui data gudang: ' . $gudang->nama_gudang, $gudang, $oldData, $newData);
 
             return redirect()->route('gudang.index')->with('success', 'Data gudang berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class GudangController extends Controller
             $nama = $gudang->nama_gudang;
             $gudang->delete();
 
-            $this->activityLog->log('DELETE_GUDANG', "Menghapus data gudang: {$nama}");
+            $this->activityLog->log('DELETE', 'Gudang', 'Menghapus data gudang: ' . $nama);
 
             return redirect()->route('gudang.index')->with('success', 'Data gudang berhasil dihapus.');
         } catch (\Exception $e) {

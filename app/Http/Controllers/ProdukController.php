@@ -87,7 +87,7 @@ class ProdukController extends Controller
             
             $produk = Produk::create($data);
 
-            $this->activityLog->log('CREATE_PRODUK', "Menambahkan produk baru: {$produk->nama_produk}");
+            $this->activityLog->log('CREATE', 'Produk', 'Menambahkan produk baru: ' . $produk->nama_produk, $produk);
 
             return redirect()->route('produk.index')->with('success', 'Data produk berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -132,7 +132,7 @@ class ProdukController extends Controller
             $produk->update($data);
             $newData = $produk->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_PRODUK', "Memperbarui data produk: {$produk->nama_produk}", $oldData, $newData);
+            $this->activityLog->log('UPDATE', 'Produk', 'Memperbarui data produk: ' . $produk->nama_produk, $produk, $oldData, $newData);
 
             return redirect()->route('produk.index')->with('success', 'Data produk berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -149,7 +149,7 @@ class ProdukController extends Controller
             $nama = $produk->nama_produk;
             $produk->delete();
 
-            $this->activityLog->log('DELETE_PRODUK', "Menghapus data produk: {$nama}");
+            $this->activityLog->log('DELETE', 'Produk', 'Menghapus data produk: ' . $nama);
 
             return redirect()->route('produk.index')->with('success', 'Data produk berhasil dihapus.');
         } catch (\Exception $e) {

@@ -109,7 +109,7 @@ class TransaksiController extends Controller
                 }
             }
 
-            $this->activityLog->log('CREATE_TRANSAKSI', "Menambahkan transaksi baru: {$transaksi->kode_transaksi}");
+            $this->activityLog->log('CREATE', 'Transaksi', 'Menambahkan transaksi baru: ' . $transaksi->kode_transaksi, $transaksi);
 
             DB::commit();
 
@@ -183,7 +183,7 @@ class TransaksiController extends Controller
             
             $newData = $transaksi->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_TRANSAKSI', "Memperbarui transaksi: {$transaksi->kode_transaksi}", $oldData, $newData);
+            $this->activityLog->log('UPDATE', 'Transaksi', 'Memperbarui transaksi: ' . $transaksi->kode_transaksi, $transaksi, $oldData, $newData);
 
             DB::commit();
 
@@ -210,7 +210,7 @@ class TransaksiController extends Controller
             $transaksi->detail()->delete();
             $transaksi->delete();
 
-            $this->activityLog->log('DELETE_TRANSAKSI', "Menghapus transaksi: {$kode}");
+            $this->activityLog->log('DELETE', 'Transaksi', 'Menghapus transaksi: ' . $kode);
 
             DB::commit();
 

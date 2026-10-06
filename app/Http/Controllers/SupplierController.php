@@ -69,7 +69,7 @@ class SupplierController extends Controller
             
             $supplier = Supplier::create($data);
 
-            $this->activityLog->log('CREATE_SUPPLIER', "Menambahkan supplier baru: {$supplier->nama_supplier}");
+            $this->activityLog->log('CREATE', 'Supplier', 'Menambahkan supplier baru: ' . $supplier->nama_supplier, $supplier);
 
             return redirect()->route('supplier.index')->with('success', 'Data supplier berhasil ditambahkan.');
         } catch (\Exception $e) {
@@ -104,7 +104,7 @@ class SupplierController extends Controller
             $supplier->update($request->validated());
             $newData = $supplier->fresh()->toArray();
 
-            $this->activityLog->log('UPDATE_SUPPLIER', "Memperbarui data supplier: {$supplier->nama_supplier}", $oldData, $newData);
+            $this->activityLog->log('UPDATE', 'Supplier', 'Memperbarui data supplier: ' . $supplier->nama_supplier, $supplier, $oldData, $newData);
 
             return redirect()->route('supplier.index')->with('success', 'Data supplier berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class SupplierController extends Controller
             $nama = $supplier->nama_supplier;
             $supplier->delete();
 
-            $this->activityLog->log('DELETE_SUPPLIER', "Menghapus data supplier: {$nama}");
+            $this->activityLog->log('DELETE', 'Supplier', 'Menghapus data supplier: ' . $nama);
 
             return redirect()->route('supplier.index')->with('success', 'Data supplier berhasil dihapus.');
         } catch (\Exception $e) {
