@@ -29,10 +29,10 @@
                     <option value="{{ $id }}" {{ request('gudang_id') == $id ? 'selected' : '' }}>{{ $nama }}</option>
                 @endforeach
             </select>
-            <select name="status" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <select name="is_active" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option value="">Semua Status</option>
-                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
+                <option value="1" {{ request('is_active') == '1' ? 'selected' : '' }}>Aktif</option>
+                <option value="0" {{ request('is_active') == '0' ? 'selected' : '' }}>Nonaktif</option>
             </select>
             <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">Cari</button>
         </form>
@@ -80,7 +80,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($item->status)
+                            @if($item->is_active)
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
                             @else
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Nonaktif</span>

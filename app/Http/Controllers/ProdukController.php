@@ -80,6 +80,7 @@ class ProdukController extends Controller
     {
         try {
             $data = $request->validated();
+            $data['is_active'] = $request->has('is_active');
             
             if ($request->hasFile('gambar')) {
                 $data['gambar'] = $request->file('gambar')->store('produk', 'public');
@@ -120,6 +121,7 @@ class ProdukController extends Controller
     {
         try {
             $data = $request->validated();
+            $data['is_active'] = $request->has('is_active');
             $oldData = $produk->toArray();
 
             if ($request->hasFile('gambar')) {

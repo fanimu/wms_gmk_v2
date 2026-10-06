@@ -31,7 +31,7 @@
             @endif
             
             <div class="mt-4 w-full">
-                @if($produk->status)
+                @if($produk->is_active)
                     <span class="w-full block text-center py-2 bg-green-100 text-green-800 rounded-md font-semibold">Status: Aktif</span>
                 @else
                     <span class="w-full block text-center py-2 bg-red-100 text-red-800 rounded-md font-semibold">Status: Nonaktif</span>
