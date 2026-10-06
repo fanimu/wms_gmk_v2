@@ -21,7 +21,8 @@ class ProdukRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('produk');
+        $produk = $this->route('produk');
+        $id = $produk ? ($produk instanceof \App\Models\Produk ? $produk->id : $produk) : null;
 
         return [
             'sku' => 'required|string|max:50|unique:produk,sku,' . $id,
