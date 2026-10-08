@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\MarketplaceStore;
+use App\Jobs\FetchMarketplaceOrdersJob;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -53,5 +55,19 @@ class OrderController extends Controller
         $order->save();
 
         return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui menjadi ' . $request->status . '.');
+    }
+
+    /**
+     * Menarik pesanan terbaru dari marketplace.
+     */
+    public function fetch(Request $request)
+    {
+        $stores = MarketplaceStore::all();
+        
+        foreach ($stores as $store) {
+            FetchMarketplaceOrdersJob::dispatchSync($store->id);
+        }
+        
+        return redirect()->back()->with('success', 'Berhasil menarik pesanan terbaru dari marketplace.');
     }
 }

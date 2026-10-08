@@ -102,6 +102,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // ── ORDERS (OMS) ──
+    Route::post('/order/fetch', [\App\Http\Controllers\OrderController::class, 'fetch'])->name('order.fetch');
     Route::resource('order', \App\Http\Controllers\OrderController::class)->only(['index', 'show']);
     Route::post('/order/{order}/status', [\App\Http\Controllers\OrderController::class, 'updateStatus'])->name('order.status');
 

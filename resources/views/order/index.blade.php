@@ -6,6 +6,12 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold text-gray-800">Pesanan Marketplace</h2>
+        <form method="POST" action="{{ route('order.fetch') }}">
+            @csrf
+            <button type="submit" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                Tarik Pesanan Terbaru
+            </button>
+        </form>
     </div>
 
     <!-- Filter Form -->
