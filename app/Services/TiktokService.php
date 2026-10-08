@@ -151,8 +151,8 @@ class TiktokService
 
         $bodyArray = [
             'page_size' => 50,
-            'create_time_from' => $timeFrom,
-            'create_time_to' => $timeTo,
+            'create_time_ge' => $timeFrom,
+            'create_time_lt' => $timeTo,
         ];
         $bodyJson = json_encode($bodyArray);
 
