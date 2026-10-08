@@ -66,7 +66,7 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
                         
                         $fetchedOrders[] = [
                             'order_number' => $detail['order_sn'],
-                            'total_amount' => $detail['total_amount'],
+                            'total_amount' => $detail['total_amount'] ?? 0,
                             'buyer_name' => $detail['buyer_username'] ?? 'Shopee Buyer',
                             'order_date' => date('Y-m-d H:i:s', $detail['create_time']),
                             'items' => $items,
