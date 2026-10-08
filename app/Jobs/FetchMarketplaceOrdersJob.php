@@ -99,7 +99,7 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
             }
         } catch (\Exception $e) {
             Log::error("Failed fetching live orders for {$store->platform}: " . $e->getMessage());
-            return;
+            throw $e; // Re-throw so OrderController can catch it and show to user!
         }
 
         foreach ($fetchedOrders as $orderData) {
