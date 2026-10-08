@@ -160,19 +160,25 @@ class TiktokService
         
         $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&sign=' . $sign;
 
-        // Use send to explicitly avoid Laravel altering the body or appending charset to Content-Type
-        $response = \Illuminate\Support\Facades\Http::withHeaders([
-            'x-tts-access-token' => $accessToken,
-            'Content-Type' => 'application/json',
-        ])->send('POST', $url, [
-            'body' => $bodyJson
+        // Use raw cURL to have 100% control and avoid any framework interference
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $bodyJson);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'x-tts-access-token: ' . $accessToken,
+            'Content-Type: application/json'
         ]);
+        
+        $responseBody = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-        if ($response->failed()) {
-            throw new Exception('Gagal mendapatkan daftar pesanan TikTok: ' . $response->body());
+        if ($httpCode >= 400 || $responseBody === false) {
+            throw new Exception('Gagal mendapatkan daftar pesanan TikTok: HTTP ' . $httpCode . ' ' . $responseBody);
         }
 
-        $data = $response->json();
+        $data = json_decode($responseBody, true);
         if (isset($data['code']) && $data['code'] !== 0) {
             throw new Exception('Error dari TikTok: ' . ($data['message'] ?? 'Unknown error'));
         }
