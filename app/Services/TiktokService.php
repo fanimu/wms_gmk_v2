@@ -158,13 +158,12 @@ class TiktokService
 
         $sign = $this->generateSign($apiPath, $params, $bodyJson);
         
-        // Manual build URL with rawurlencode to prevent spaces turning into +
         $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&sign=' . $sign;
 
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'x-tts-access-token' => $accessToken,
             'Content-Type' => 'application/json',
-        ])->post($url, $bodyArray);
+        ])->withBody($bodyJson, 'application/json')->post($url);
 
         if ($response->failed()) {
             throw new Exception('Gagal mendapatkan daftar pesanan TikTok: ' . $response->body());
