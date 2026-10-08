@@ -23,7 +23,7 @@
         <!-- Kolom Gambar -->
         <div class="w-full md:w-1/3 flex flex-col items-center">
             @if($produk->gambar)
-                <img src="{{ asset('storage/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" class="w-full h-auto object-cover rounded-lg border border-gray-200 shadow-sm">
+                <img src="{{ asset($produk->gambar) }}" alt="{{ $produk->nama_produk }}" class="w-full h-auto object-cover rounded-lg border border-gray-200 shadow-sm">
             @else
                 <div class="w-full aspect-square bg-gray-100 flex items-center justify-center rounded-lg border border-gray-200">
                     <span class="text-gray-400">Tidak ada gambar</span>

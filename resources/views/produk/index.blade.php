@@ -62,7 +62,7 @@
                     <tr class="{{ $item->stok <= $item->stok_minimum ? 'bg-red-50' : '' }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($item->gambar)
-                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_produk }}" class="h-10 w-10 object-cover rounded">
+                                <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama_produk }}" class="h-10 w-10 object-cover rounded">
                             @else
                                 <div class="h-10 w-10 bg-gray-200 flex items-center justify-center rounded text-gray-500 text-xs">No Img</div>
                             @endif

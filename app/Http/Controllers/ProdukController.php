@@ -83,7 +83,10 @@ class ProdukController extends Controller
             $data['is_active'] = $request->has('is_active');
             
             if ($request->hasFile('gambar')) {
-                $data['gambar'] = $request->file('gambar')->store('produk', 'public');
+                $file = $request->file('gambar');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/produk'), $filename);
+                $data['gambar'] = 'uploads/produk/' . $filename;
             }
             
             $produk = Produk::create($data);
@@ -125,10 +128,14 @@ class ProdukController extends Controller
             $oldData = $produk->toArray();
 
             if ($request->hasFile('gambar')) {
-                if ($produk->gambar) {
-                    Storage::disk('public')->delete($produk->gambar);
+                // Hapus gambar lama jika ada
+                if ($produk->gambar && file_exists(public_path($produk->gambar))) {
+                    unlink(public_path($produk->gambar));
                 }
-                $data['gambar'] = $request->file('gambar')->store('produk', 'public');
+                $file = $request->file('gambar');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/produk'), $filename);
+                $data['gambar'] = 'uploads/produk/' . $filename;
             }
 
             $produk->update($data);
