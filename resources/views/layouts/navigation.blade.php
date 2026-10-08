@@ -114,12 +114,13 @@
                     <span class="font-medium text-sm">Mapping Produk</span>
                 </a>
 
-                <a href="#" class="flex items-center px-3 py-2.5 rounded-lg transition-colors group opacity-50 cursor-not-allowed hover:bg-transparent border-l-4 border-transparent">
+                <a href="{{ Route::has('order.index') ? route('order.index') : '#' }}" 
+                   class="flex items-center px-3 py-2.5 rounded-lg transition-colors group
+                   {{ request()->routeIs('order.*') ? 'bg-indigo-600/10 text-indigo-400 border-l-4 border-indigo-500' : 'hover:bg-slate-700/50 hover:text-white border-l-4 border-transparent' }}">
                     <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                     </svg>
                     <span class="font-medium text-sm">Orders</span>
-                    <span class="ml-auto text-[10px] bg-slate-700 text-slate-300 py-0.5 px-1.5 rounded">(Segera)</span>
                 </a>
             </div>
         </div>

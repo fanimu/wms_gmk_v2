@@ -99,6 +99,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}/disconnect', [\App\Http\Controllers\MarketplaceController::class, 'disconnect'])->name('disconnect');
         Route::post('/{id}/sync', [\App\Http\Controllers\MarketplaceController::class, 'sync'])->name('sync');
     });
+
+
+    // ── ORDERS (OMS) ──
+    Route::resource('order', \App\Http\Controllers\OrderController::class)->only(['index', 'show']);
+    Route::post('/order/{order}/status', [\App\Http\Controllers\OrderController::class, 'updateStatus'])->name('order.status');
+
 });
 
 require __DIR__.'/auth.php';
