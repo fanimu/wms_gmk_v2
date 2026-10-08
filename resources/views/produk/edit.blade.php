@@ -140,7 +140,7 @@
                 <label for="gambar" class="block text-sm font-medium text-gray-700">Gambar Produk</label>
                 @if($produk->gambar)
                     <div class="mb-3">
-                        <img src="{{ asset('storage/' . $produk->gambar) }}" alt="Preview" class="h-32 w-32 object-cover rounded border border-gray-200">
+                        <img src="{{ asset($produk->gambar) }}" alt="Preview" class="h-40 w-40 object-cover rounded border border-gray-200">
                     </div>
                 @endif
                 <input type="file" name="gambar" id="gambar" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
