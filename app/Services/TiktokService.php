@@ -146,7 +146,10 @@ class TiktokService
         ];
 
         $sign = $this->generateSign($apiPath, $params);
-        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . $shopCipher . '&sign=' . $sign;
+        $queryParams = $params;
+        $queryParams['sign'] = $sign;
+        
+        $url = $this->baseUrl . $apiPath . '?' . http_build_query($queryParams);
 
         $body = [
             'create_time_from' => $timeFrom,
