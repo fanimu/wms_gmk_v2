@@ -201,10 +201,10 @@ class MarketplaceController extends Controller
     {
         $store = MarketplaceStore::findOrFail($id);
         
-        \App\Jobs\SyncMarketplaceProductsJob::dispatch($store->id);
+        \App\Jobs\SyncMarketplaceProductsJob::dispatchSync($store->id);
         
         return redirect()->route('marketplace.index')
-            ->with('success', 'Proses sinkronisasi berjalan di latar belakang (Background Job)...');
+            ->with('success', 'Sinkronisasi berhasil dijalankan.');
     }
 
     /**

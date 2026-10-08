@@ -54,9 +54,9 @@ class SyncMarketplaceProductsJob implements ShouldQueue
                 $platformProducts = [
                     [
                         'platform_product_id' => 'SHP-1001',
-                        'sku' => 'SKU-TEST-01',
-                        'platform_price' => 100000,
-                        'platform_stock' => 50,
+                        'sku' => 'PL02BK40NK24', // Sesuaikan dengan SKU asli user
+                        'platform_price' => 202000,
+                        'platform_stock' => 400,
                     ],
                     [
                         'platform_product_id' => 'SHP-1002',
@@ -76,9 +76,9 @@ class SyncMarketplaceProductsJob implements ShouldQueue
                 $platformProducts = [
                     [
                         'platform_product_id' => 'TK-2001',
-                        'sku' => 'SKU-TEST-01',
-                        'platform_price' => 95000,
-                        'platform_stock' => 45,
+                        'sku' => 'PL02BK40NK24', // Sesuaikan dengan SKU asli user
+                        'platform_price' => 202000,
+                        'platform_stock' => 400,
                     ]
                 ];
             }
