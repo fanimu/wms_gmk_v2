@@ -40,7 +40,7 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
         
         Log::info("Fetching orders for store: {$store->name} ({$store->platform})");
 
-        $timeFrom = now()->subDays(3)->timestamp; // Tarik pesanan 3 hari terakhir
+        $timeFrom = now()->subDays(14)->timestamp; // Tarik pesanan 14 hari terakhir
         $timeTo = now()->timestamp;
         
         $fetchedOrders = [];
