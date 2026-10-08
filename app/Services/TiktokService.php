@@ -76,9 +76,8 @@ class TiktokService
      * @param array $params
      * @return string
      */
-    public function generateSign(string $apiPath, array $params): string
+    public function generateSign(string $apiPath, array $params, string $body = ''): string
     {
-        // Keluarkan access_token, sign dari parameter
         $keysToExclude = ['access_token', 'sign'];
         $signParams = array_diff_key($params, array_flip($keysToExclude));
         
@@ -91,6 +90,11 @@ class TiktokService
             }
             $stringToBeSigned .= $k . $v;
         }
+        
+        if ($body !== '') {
+            $stringToBeSigned .= $body;
+        }
+        
         $stringToBeSigned .= $this->appSecret;
 
         return hash_hmac('sha256', $stringToBeSigned, $this->appSecret);
@@ -145,22 +149,22 @@ class TiktokService
             'shop_cipher' => $shopCipher,
         ];
 
-        $sign = $this->generateSign($apiPath, $params);
-        $queryParams = $params;
-        $queryParams['sign'] = $sign;
-        
-        $url = $this->baseUrl . $apiPath . '?' . http_build_query($queryParams);
-
-        $body = [
+        $bodyArray = [
             'create_time_from' => $timeFrom,
             'create_time_to' => $timeTo,
             'page_size' => 50,
         ];
+        $bodyJson = json_encode($bodyArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        $sign = $this->generateSign($apiPath, $params, $bodyJson);
+        
+        // Manual build URL with rawurlencode to prevent spaces turning into +
+        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&sign=' . $sign;
 
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'x-tts-access-token' => $accessToken,
             'Content-Type' => 'application/json',
-        ])->post($url, $body);
+        ])->post($url, $bodyArray);
 
         if ($response->failed()) {
             throw new Exception('Gagal mendapatkan daftar pesanan TikTok: ' . $response->body());
