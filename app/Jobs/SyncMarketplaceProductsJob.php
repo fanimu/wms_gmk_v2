@@ -94,7 +94,7 @@ class SyncMarketplaceProductsJob implements ShouldQueue
                     MarketplaceProduct::updateOrCreate(
                         [
                             'produk_id' => $produk->id,
-                            'marketplace_store_id' => $store->id,
+                            'store_id' => $store->id,
                         ],
                         [
                             'platform_product_id' => $item['platform_product_id'],
