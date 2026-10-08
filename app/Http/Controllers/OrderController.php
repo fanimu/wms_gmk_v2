@@ -63,11 +63,28 @@ class OrderController extends Controller
     public function fetch(Request $request)
     {
         $stores = MarketplaceStore::all();
+        $errors = [];
         
         foreach ($stores as $store) {
-            FetchMarketplaceOrdersJob::dispatchSync($store->id);
+            try {
+                FetchMarketplaceOrdersJob::dispatchSync($store->id);
+            } catch (\Exception $e) {
+                $errors[] = $store->platform . ': ' . $e->getMessage();
+            }
         }
         
-        return redirect()->back()->with('success', 'Berhasil menarik pesanan terbaru dari marketplace.');
+        if (!empty($errors)) {
+            return redirect()->back()->with('error', 'Ada masalah saat menarik data asli: ' . implode(' | ', $errors));
+        }
+        
+        return redirect()->back()->with('success', 'Berhasil menarik pesanan asli dari marketplace.');
+    }
+
+    public function clearOrders()
+    {
+        \App\Models\OrderItem::truncate();
+        \App\Models\Order::query()->forceDelete();
+        
+        return redirect()->back()->with('success', 'Semua pesanan (termasuk data dummy) berhasil dibersihkan.');
     }
 }

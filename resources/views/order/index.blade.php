@@ -6,12 +6,20 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold text-gray-800">Pesanan Marketplace</h2>
-        <form method="POST" action="{{ route('order.fetch') }}">
-            @csrf
-            <button type="submit" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
-                Tarik Pesanan Terbaru
-            </button>
-        </form>
+        <div class="flex items-center space-x-3">
+            <form method="POST" action="{{ route('order.clear') }}" onsubmit="return confirm('Yakin ingin menghapus seluruh riwayat pesanan (termasuk data dummy)? Stok TIDAK akan dikembalikan secara otomatis.');">
+                @csrf
+                <button type="submit" class="text-red-600 bg-red-100 hover:bg-red-200 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                    Hapus Semua Pesanan
+                </button>
+            </form>
+            <form method="POST" action="{{ route('order.fetch') }}">
+                @csrf
+                <button type="submit" class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                    Tarik Pesanan Terbaru
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- Filter Form -->
