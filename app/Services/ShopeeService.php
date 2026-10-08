@@ -128,4 +128,71 @@ class ShopeeService
 
         return $data;
     }
+
+    public function getOrderList(string $shopId, string $accessToken, int $timeFrom, int $timeTo): array
+    {
+        $apiPath = '/api/v2/order/get_order_list';
+        $timestamp = time();
+        $sign = $this->generateSign($apiPath, $timestamp, $accessToken, $shopId);
+
+        $url = sprintf(
+            '%s%s?partner_id=%s&timestamp=%s&access_token=%s&shop_id=%s&sign=%s&time_range_field=create_time&time_from=%s&time_to=%s&page_size=50',
+            $this->baseUrl,
+            $apiPath,
+            $this->partnerId,
+            $timestamp,
+            $accessToken,
+            $shopId,
+            $sign,
+            $timeFrom,
+            $timeTo
+        );
+
+        $response = \Illuminate\Support\Facades\Http::get($url);
+
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan daftar pesanan Shopee: ' . $response->body());
+        }
+
+        $data = $response->json();
+        if (isset($data['error']) && $data['error'] !== '') {
+            throw new Exception('Error dari Shopee: ' . ($data['message'] ?? $data['error']));
+        }
+
+        return $data['response']['order_list'] ?? [];
+    }
+
+    public function getOrderDetail(string $shopId, string $accessToken, array $orderSnList): array
+    {
+        $apiPath = '/api/v2/order/get_order_detail';
+        $timestamp = time();
+        $sign = $this->generateSign($apiPath, $timestamp, $accessToken, $shopId);
+
+        $orderSnString = implode(',', $orderSnList);
+
+        $url = sprintf(
+            '%s%s?partner_id=%s&timestamp=%s&access_token=%s&shop_id=%s&sign=%s&response_optional_fields=buyer_user_id,buyer_username,item_list&order_sn_list=%s',
+            $this->baseUrl,
+            $apiPath,
+            $this->partnerId,
+            $timestamp,
+            $accessToken,
+            $shopId,
+            $sign,
+            $orderSnString
+        );
+
+        $response = \Illuminate\Support\Facades\Http::get($url);
+
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan detail pesanan Shopee: ' . $response->body());
+        }
+
+        $data = $response->json();
+        if (isset($data['error']) && $data['error'] !== '') {
+            throw new Exception('Error dari Shopee: ' . ($data['message'] ?? $data['error']));
+        }
+
+        return $data['response']['order_list'] ?? [];
+    }
 }

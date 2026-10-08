@@ -133,4 +133,41 @@ class TiktokService
 
         return $data['data']['shops'][0] ?? [];
     }
+
+    public function getOrders(string $accessToken, string $shopCipher, int $timeFrom, int $timeTo): array
+    {
+        $apiPath = '/order/202309/orders/search';
+        $timestamp = time();
+
+        $params = [
+            'app_key' => $this->appKey,
+            'timestamp' => $timestamp,
+            'shop_cipher' => $shopCipher,
+        ];
+
+        $sign = $this->generateSign($apiPath, $params);
+        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . $shopCipher . '&sign=' . $sign;
+
+        $body = [
+            'create_time_from' => $timeFrom,
+            'create_time_to' => $timeTo,
+            'page_size' => 50,
+        ];
+
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'x-tts-access-token' => $accessToken,
+            'Content-Type' => 'application/json',
+        ])->post($url, $body);
+
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan daftar pesanan TikTok: ' . $response->body());
+        }
+
+        $data = $response->json();
+        if (isset($data['code']) && $data['code'] !== 0) {
+            throw new Exception('Error dari TikTok: ' . ($data['message'] ?? 'Unknown error'));
+        }
+
+        return $data['data']['orders'] ?? [];
+    }
 }

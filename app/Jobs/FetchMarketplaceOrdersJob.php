@@ -40,28 +40,69 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
         
         Log::info("Fetching orders for store: {$store->name} ({$store->platform})");
 
-        // Dummy orders response simulating a marketplace API call
-        $dummyOrders = [
-            [
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
-                'total_amount' => 150000,
-                'buyer_name' => 'Budi Santoso',
-                'items' => [
-                    ['sku' => 'PL02BK40NK24', 'quantity' => 1, 'price' => 100000],
-                    ['sku' => 'SKU-TEST-02', 'quantity' => 1, 'price' => 50000],
-                ]
-            ],
-            [
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
-                'total_amount' => 100000,
-                'buyer_name' => 'Siti Aminah',
-                'items' => [
-                    ['sku' => 'PL02BK40NK24', 'quantity' => 1, 'price' => 100000],
-                ]
-            ]
-        ];
+        $timeFrom = now()->subDays(3)->timestamp; // Tarik pesanan 3 hari terakhir
+        $timeTo = now()->timestamp;
+        
+        $fetchedOrders = [];
 
-        foreach ($dummyOrders as $orderData) {
+        try {
+            if ($store->platform === 'shopee') {
+                $shopeeService = app(\App\Services\ShopeeService::class);
+                $orders = $shopeeService->getOrderList($store->shop_id, $store->access_token, $timeFrom, $timeTo);
+                
+                if (!empty($orders)) {
+                    $orderSnList = array_column($orders, 'order_sn');
+                    $orderDetails = $shopeeService->getOrderDetail($store->shop_id, $store->access_token, $orderSnList);
+                    
+                    foreach ($orderDetails as $detail) {
+                        $items = [];
+                        foreach ($detail['item_list'] as $item) {
+                            $items[] = [
+                                'sku' => $item['model_sku'] ?: $item['item_sku'],
+                                'quantity' => $item['model_quantity_purchased'],
+                                'price' => $item['model_discounted_price'],
+                            ];
+                        }
+                        
+                        $fetchedOrders[] = [
+                            'order_number' => $detail['order_sn'],
+                            'total_amount' => $detail['total_amount'],
+                            'buyer_name' => $detail['buyer_username'] ?? 'Shopee Buyer',
+                            'order_date' => date('Y-m-d H:i:s', $detail['create_time']),
+                            'items' => $items,
+                        ];
+                    }
+                }
+                
+            } elseif ($store->platform === 'tiktok') {
+                $tiktokService = app(\App\Services\TiktokService::class);
+                $orders = $tiktokService->getOrders($store->access_token, $store->shop_id, $timeFrom, $timeTo);
+                
+                foreach ($orders as $order) {
+                    $items = [];
+                    foreach ($order['item_list'] as $item) {
+                        $items[] = [
+                            'sku' => $item['sku_id'], // or seller_sku depending on tiktok API response
+                            'quantity' => $item['quantity'],
+                            'price' => $item['sku_original_price'],
+                        ];
+                    }
+                    
+                    $fetchedOrders[] = [
+                        'order_number' => $order['order_id'],
+                        'total_amount' => $order['payment']['total_amount'] ?? 0,
+                        'buyer_name' => $order['buyer_email'] ?? 'TikTok Buyer',
+                        'order_date' => date('Y-m-d H:i:s', $order['create_time'] / 1000), // TikTok returns ms
+                        'items' => $items,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Failed fetching live orders for {$store->platform}: " . $e->getMessage());
+            return;
+        }
+
+        foreach ($fetchedOrders as $orderData) {
             $existingOrder = Order::where('order_number', $orderData['order_number'])->first();
             
             if (!$existingOrder) {
@@ -71,7 +112,7 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
                     'status' => 'pending',
                     'total_amount' => $orderData['total_amount'],
                     'buyer_name' => $orderData['buyer_name'],
-                    'order_date' => now(),
+                    'order_date' => $orderData['order_date'],
                 ]);
 
                 foreach ($orderData['items'] as $itemData) {
