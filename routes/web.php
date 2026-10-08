@@ -28,6 +28,24 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+Route::get('/symlink', function () {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+
+    if (file_exists($link)) {
+        return 'Symlink sudah ada.';
+    }
+
+    try {
+        symlink($target, $link);
+        return 'Storage linked successfully!';
+    } catch (\Exception $e) {
+        // Fallback: copy files if symlink fails on shared hosting
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage linked via artisan! ' . \Illuminate\Support\Facades\Artisan::output();
+    }
+});
+
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
