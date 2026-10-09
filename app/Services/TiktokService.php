@@ -147,10 +147,10 @@ class TiktokService
             'app_key' => $this->appKey,
             'timestamp' => $timestamp,
             'shop_cipher' => $shopCipher,
+            'page_size' => 50,
         ];
 
         $bodyArray = [
-            'page_size' => 50,
             'create_time_ge' => $timeFrom,
             'create_time_lt' => $timeTo,
         ];
@@ -158,7 +158,7 @@ class TiktokService
 
         $sign = $this->generateSign($apiPath, $params, $bodyJson);
         
-        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&sign=' . $sign;
+        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&page_size=50&sign=' . $sign;
 
         $response = \Illuminate\Support\Facades\Http::withHeaders([
             'x-tts-access-token' => $accessToken,
