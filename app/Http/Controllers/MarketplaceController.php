@@ -143,19 +143,24 @@ class MarketplaceController extends Controller
             }
 
             $warning = '';
-            // Coba ambil info toko (nama asli)
+            // Coba ambil info toko (nama asli dan cipher)
             $shopName = 'TikTok Store ' . $openId;
+            $shopCipher = $openId; // fallback
+            
             try {
                 $shopInfo = $tiktokService->getShopInfo($accessToken);
                 if (isset($shopInfo['name']) && !empty($shopInfo['name'])) {
                     $shopName = $shopInfo['name'];
+                }
+                if (isset($shopInfo['cipher']) && !empty($shopInfo['cipher'])) {
+                    $shopCipher = $shopInfo['cipher'];
                 }
             } catch (Exception $e) {
                 Log::warning('Gagal mengambil nama toko TikTok: ' . $e->getMessage());
                 $warning = ' (Info: Gagal mengambil profil toko - ' . $e->getMessage() . ')';
             }
 
-            $store = MarketplaceStore::withTrashed()->where('platform', 'tiktok')->where('shop_id', $openId)->first();
+            $store = MarketplaceStore::withTrashed()->where('platform', 'tiktok')->where('shop_id', $shopCipher)->first();
             
             $storeData = [
                 'shop_name' => $shopName,
@@ -172,7 +177,7 @@ class MarketplaceController extends Controller
                 $store->update($storeData);
             } else {
                 $storeData['platform'] = 'tiktok';
-                $storeData['shop_id'] = $openId;
+                $storeData['shop_id'] = $shopCipher;
                 MarketplaceStore::create($storeData);
             }
 
