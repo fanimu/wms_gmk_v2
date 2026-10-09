@@ -147,36 +147,35 @@ class TiktokService
             'app_key' => $this->appKey,
             'timestamp' => $timestamp,
             'shop_cipher' => $shopCipher,
+            'page_size' => 50,
         ];
 
+        // We will send all possible casing variations of page_size just in case TikTok's parser is strict/inconsistent.
         $bodyArray = [
             'page_size' => 50,
+            'pageSize' => 50,
+            'PageSize' => 50,
+            'create_time_ge' => $timeFrom,
+            'create_time_lt' => $timeTo,
         ];
         $bodyJson = json_encode($bodyArray);
 
         $sign = $this->generateSign($apiPath, $params, $bodyJson);
         
-        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&sign=' . $sign;
+        $url = $this->baseUrl . $apiPath . '?app_key=' . $this->appKey . '&timestamp=' . $timestamp . '&shop_cipher=' . rawurlencode($shopCipher) . '&page_size=50&sign=' . $sign;
 
-        // Use raw cURL to have 100% control and avoid any framework interference
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $bodyJson);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'x-tts-access-token: ' . $accessToken,
-            'Content-Type: application/json'
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'x-tts-access-token' => $accessToken,
+            'Content-Type' => 'application/json',
+        ])->send('POST', $url, [
+            'body' => $bodyJson
         ]);
-        
-        $responseBody = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
-        if ($httpCode >= 400 || $responseBody === false) {
-            throw new Exception('Gagal mendapatkan daftar pesanan TikTok: HTTP ' . $httpCode . ' ' . $responseBody);
+        if ($response->failed()) {
+            throw new Exception('Gagal mendapatkan daftar pesanan TikTok: HTTP ' . $response->status() . ' ' . $response->body());
         }
 
-        $data = json_decode($responseBody, true);
+        $data = $response->json();
         if (isset($data['code']) && $data['code'] !== 0) {
             throw new Exception('Error dari TikTok: ' . ($data['message'] ?? 'Unknown error'));
         }
