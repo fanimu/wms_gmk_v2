@@ -149,10 +149,17 @@ class MarketplaceController extends Controller
             
             try {
                 $shopInfo = $tiktokService->getShopInfo($accessToken);
-                if (isset($shopInfo['name']) && !empty($shopInfo['name'])) {
+                // The API can return 'name' or 'shop_name' depending on the exact version/endpoint
+                if (isset($shopInfo['shop_name']) && !empty($shopInfo['shop_name'])) {
+                    $shopName = $shopInfo['shop_name'];
+                } elseif (isset($shopInfo['name']) && !empty($shopInfo['name'])) {
                     $shopName = $shopInfo['name'];
                 }
-                if (isset($shopInfo['cipher']) && !empty($shopInfo['cipher'])) {
+                
+                // The API can return 'shop_cipher' or 'cipher'
+                if (isset($shopInfo['shop_cipher']) && !empty($shopInfo['shop_cipher'])) {
+                    $shopCipher = $shopInfo['shop_cipher'];
+                } elseif (isset($shopInfo['cipher']) && !empty($shopInfo['cipher'])) {
                     $shopCipher = $shopInfo['cipher'];
                 }
             } catch (Exception $e) {
