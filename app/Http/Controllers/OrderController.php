@@ -14,7 +14,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with('items')->orderBy('order_date', 'desc');
+        $sortDirection = $request->input('sort', 'desc');
+        $query = Order::with('items')->orderBy('order_date', $sortDirection);
 
         if ($request->filled('status') && $request->status !== 'semua') {
             $query->where('status', $request->status);
