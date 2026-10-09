@@ -80,19 +80,21 @@ class FetchMarketplaceOrdersJob implements ShouldQueue
                 
                 foreach ($orders as $order) {
                     $items = [];
-                    foreach ($order['item_list'] as $item) {
+                    // TikTok uses 'line_items' instead of 'item_list'
+                    $lineItems = $order['line_items'] ?? [];
+                    foreach ($lineItems as $item) {
                         $items[] = [
-                            'sku' => $item['sku_id'], // or seller_sku depending on tiktok API response
-                            'quantity' => $item['quantity'],
-                            'price' => $item['sku_original_price'],
+                            'sku' => $item['seller_sku'] ?? $item['sku_id'] ?? 'UNKNOWN', // WMS uses seller_sku
+                            'quantity' => $item['quantity'] ?? 1, // Default to 1 if not provided
+                            'price' => $item['sale_price'] ?? $item['original_price'] ?? 0,
                         ];
                     }
                     
                     $fetchedOrders[] = [
-                        'order_number' => $order['order_id'],
+                        'order_number' => $order['id'] ?? 'UNKNOWN',
                         'total_amount' => $order['payment']['total_amount'] ?? 0,
-                        'buyer_name' => $order['buyer_email'] ?? 'TikTok Buyer',
-                        'order_date' => date('Y-m-d H:i:s', $order['create_time'] / 1000), // TikTok returns ms
+                        'buyer_name' => $order['buyer_nickname'] ?? $order['buyer_email'] ?? 'TikTok Buyer',
+                        'order_date' => date('Y-m-d H:i:s', $order['create_time']), // TikTok v2 returns seconds
                         'items' => $items,
                     ];
                 }
